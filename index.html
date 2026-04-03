@@ -1,58 +1,113 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniStep Platform</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #2563EB;
+    color: white;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin: 15px 0;
+}
+
+.main {
+    margin-left: 260px;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+button {
+    background: #2563EB;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🎓 UniStep</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Сабақ кестесі</a>
+    <a href="#">GPA калькулятор</a>
+    <a href="#">Дедлайн</a>
+    <a href="#">Survival Guide</a>
+</div>
+
+<div class="main">
+    <h1>Қош келдің!</h1>
+
+    <div class="card">
+        <h3>📅 Келесі сабақ</h3>
+        <p>Математика — 302 аудитория — 15:00</p>
+    </div>
+
+    <div class="card">
+        <h3>📊 GPA Калькулятор</h3>
+        <input type="number" id="grade" placeholder="Баға (0-100)">
+        <input type="number" id="credit" placeholder="Кредит">
+        <button onclick="calculateGPA()">Есептеу</button>
+        <p id="result"></p>
+    </div>
+
+    <div class="card">
+        <h3>⏰ Дедлайн</h3>
+        <p>Физика СӨЖ — 2 күн қалды</p>
+    </div>
+
+</div>
+
 <script>
-let subjects = [];
-
-function convertToGPA(grade) {
-    if (grade >= 95) return 4.0;     // A
-    if (grade >= 90) return 3.7;     // A-
-    if (grade >= 85) return 3.3;     // B+
-    if (grade >= 80) return 3.0;     // B
-    if (grade >= 75) return 2.7;     // B-
-    if (grade >= 70) return 2.3;     // C+
-    if (grade >= 65) return 2.0;     // C
-    if (grade >= 60) return 1.7;     // C-
-    if (grade >= 55) return 1.3;     // D+
-    if (grade >= 50) return 1.0;     // D
-    return 0;                        // F
-}
-
-function addSubject() {
-    let grade = parseFloat(document.getElementById("grade").value);
-    let credit = parseFloat(document.getElementById("credit").value);
-
-    if (isNaN(grade) || isNaN(credit)) {
-        alert("Мәлімет енгізіңіз!");
-        return;
-    }
-
-    let gpa = convertToGPA(grade);
-
-    subjects.push({ grade, credit, gpa });
-
-    let li = document.createElement("li");
-    li.innerText = `Баға: ${grade} → GPA: ${gpa} | Кредит: ${credit}`;
-    document.getElementById("subjects").appendChild(li);
-
-    document.getElementById("grade").value = "";
-    document.getElementById("credit").value = "";
-}
-
 function calculateGPA() {
-    if (subjects.length === 0) {
-        document.getElementById("result").innerText = "Пән қосыңыз!";
-        return;
+    let grade = document.getElementById("grade").value;
+    let credit = document.getElementById("credit").value;
+
+    if(grade && credit) {
+        let gpa = (grade / 25) * credit;
+        document.getElementById("result").innerText = 
+        "Болжалды GPA ұпайы: " + gpa.toFixed(2);
+    } else {
+        document.getElementById("result").innerText = 
+        "Мәлімет енгізіңіз!";
     }
-
-    let totalPoints = 0;
-    let totalCredits = 0;
-
-    subjects.forEach(sub => {
-        totalPoints += sub.gpa * sub.credit;
-        totalCredits += sub.credit;
-    });
-
-    let finalGPA = totalPoints / totalCredits;
-
-    document.getElementById("result").innerText =
-        "Жалпы GPA: " + finalGPA.toFixed(2);
 }
 </script>
+
+</body>
+</html>
