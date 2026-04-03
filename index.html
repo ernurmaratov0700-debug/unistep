@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UniStep Platform</title>
+
 <style>
 body {
     margin: 0;
@@ -59,6 +60,7 @@ input {
 }
 </style>
 </head>
+
 <body>
 
 <div class="sidebar">
@@ -80,10 +82,17 @@ input {
 
     <div class="card">
         <h3>📊 GPA Калькулятор</h3>
-        <input type="number" id="grade" placeholder="Баға (0-100)">
-        <input type="number" id="credit" placeholder="Кредит">
-        <button onclick="calculateGPA()">Есептеу</button>
+
+        <input type="number" id="grade" placeholder="Баға (0-100)" min="0" max="100">
+        <input type="number" id="credit" placeholder="Кредит" min="1">
+
+        <br><br>
+
+        <button onclick="addSubject()">+ Пән қосу</button>
+        <button onclick="calculateGPA()">GPA есептеу</button>
+
         <p id="result"></p>
+        <ul id="subjects"></ul>
     </div>
 
     <div class="card">
@@ -94,17 +103,57 @@ input {
 </div>
 
 <script>
-function calculateGPA() {
-    let grade = document.getElementById("grade").value;
-    let credit = document.getElementById("credit").value;
+let subjects = [];
 
-    if(grade && credit) {
-        let gpa = (grade / 25) * credit;
-        document.getElementById("result").innerText = 
-        "Болжалды GPA ұпайы: " + gpa.toFixed(2);
+function convertToGPA(grade) {
+    if (grade >= 95) return 4.0;
+    if (grade >= 90) return 3.67;
+    if (grade >= 85) return 3.33;
+    if (grade >= 80) return 3.0;
+    if (grade >= 75) return 2.67;
+    if (grade >= 70) return 2.33;
+    if (grade >= 65) return 2.0;
+    if (grade >= 60) return 1.67;
+    if (grade >= 50) return 1.0;
+    return 0;
+}
+
+function addSubject() {
+    let grade = parseFloat(document.getElementById("grade").value);
+    let credit = parseFloat(document.getElementById("credit").value);
+
+    if (!isNaN(grade) && !isNaN(credit)) {
+        subjects.push({ grade, credit });
+
+        let li = document.createElement("li");
+        li.innerText = `Баға: ${grade}, Кредит: ${credit}`;
+        document.getElementById("subjects").appendChild(li);
+
+        document.getElementById("grade").value = "";
+        document.getElementById("credit").value = "";
     } else {
-        document.getElementById("result").innerText = 
-        "Мәлімет енгізіңіз!";
+        alert("Мәлімет енгізіңіз!");
+    }
+}
+
+function calculateGPA() {
+    let totalPoints = 0;
+    let totalCredits = 0;
+
+    subjects.forEach(sub => {
+        let gpa = convertToGPA(sub.grade);
+        totalPoints += gpa * sub.credit;
+        totalCredits += sub.credit;
+    });
+
+    if (totalCredits > 0) {
+        let finalGPA = totalPoints / totalCredits;
+
+        document.getElementById("result").innerText =
+            "Жалпы GPA: " + finalGPA.toFixed(2);
+    } else {
+        document.getElementById("result").innerText =
+            "Пән қосыңыз!";
     }
 }
 </script>
